@@ -32,13 +32,11 @@ if [[ "$TOKEN" != sk-ant-oat* ]] || [ ${#TOKEN} -lt 90 ] || [ ${#TOKEN} -gt 160 
   echo "✗ Couldn't get a valid token (got ${#TOKEN} chars). Run the script again."; exit 1
 fi
 echo "Testing token with Claude..."
-TMPHOME=$(mktemp -d)
-if OUT=$(HOME="$TMPHOME" CLAUDE_CODE_OAUTH_TOKEN="$TOKEN" claude -p "Reply with exactly: TOKEN_OK" --max-turns 1 2>&1) && grep -q TOKEN_OK <<<"$OUT"; then
+if OUT=$(env -u ANTHROPIC_API_KEY CLAUDE_CODE_OAUTH_TOKEN="$TOKEN" claude -p "Reply with exactly: TOKEN_OK" --max-turns 1 2>&1) && grep -q TOKEN_OK <<<"$OUT"; then
   echo "✓ Token works."
 else
-  echo "✗ Token rejected: $(head -c 200 <<<"$OUT")"; rm -rf "$TMPHOME"; exit 1
+  echo "✗ Token rejected: $(head -c 200 <<<"$OUT")"; exit 1
 fi
-rm -rf "$TMPHOME"
 for R in $(cat "$(dirname "$0")/../repos.txt") devops-hq; do
   printf '%s' "$TOKEN" | gh secret set CLAUDE_CODE_OAUTH_TOKEN -R "Sabin78910/$R" >/dev/null && echo "set: $R"
 done
