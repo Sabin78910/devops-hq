@@ -1,0 +1,47 @@
+name: Watch all repos
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect status
+        env:
+          GH_TOKEN: ${{ secrets.ORG_READ_TOKEN || github.token }}
+        run: ./scripts/status.sh > status.md
+      - run: cat status.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish status.md to the repo (dashboard)
+        run: |
+          git config user.name "devops-hq-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add status.md
+          git commit -m "status: $(date -u +%FT%H:%MZ)" || exit 0
+          git push
+      - name: Alert — open/update an issue when something is red (emails you)
+        if: ${{ hashFiles('status.md') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if grep -q "RED" status.md; then
+            N=$(gh issue list --label alert --state open --json number --jq '.[0].number // empty')
+            if [ -n "$N" ]; then gh issue comment "$N" --body-file status.md
+            else gh label create alert --color B60205 2>/dev/null || true
+                 gh issue create --title "🔴 Repo health alert" --label alert --body-file status.md; fi
+          fi
+      - name: Optional Telegram alert
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+        if: ${{ env.TG_TOKEN != '' }}
+        run: |
+          grep -q "RED" status.md && curl -s "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
+            -d chat_id="$TG_CHAT" --data-urlencode text@status.md || true

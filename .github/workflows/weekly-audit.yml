@@ -1,0 +1,44 @@
+name: Weekly audit
+
+on:
+  schedule:
+    - cron: "0 6 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit every repo
+        env:
+          GH_TOKEN: ${{ secrets.ORG_READ_TOKEN || github.token }}
+          OWNER: Sabin78910
+        run: |
+          F="audits/$(date -u +%F)-weekly.md"
+          {
+            echo "# Weekly audit $(date -u +%F)"
+            ./scripts/status.sh | tail -n +3
+            echo
+            echo "## Repo hygiene"
+            echo "| Repo | Branch protection | Secret scanning | License | README | CLAUDE.md |"
+            echo "|---|---|---|---|---|---|"
+            while read -r R; do
+              [ -z "$R" ] && continue
+              BP=$(gh api "repos/$OWNER/$R/branches/main/protection" >/dev/null 2>&1 && echo Pass || echo Warn)
+              SS=$(gh api "repos/$OWNER/$R" --jq '.security_and_analysis.secret_scanning.status // "unknown"' 2>/dev/null)
+              LIC=$(gh api "repos/$OWNER/$R/license" >/dev/null 2>&1 && echo Pass || echo Fail)
+              RM=$(gh api "repos/$OWNER/$R/readme" >/dev/null 2>&1 && echo Pass || echo Fail)
+              CM=$(gh api "repos/$OWNER/$R/contents/CLAUDE.md" >/dev/null 2>&1 && echo Pass || echo Fail)
+              echo "| $R | $BP | $SS | $LIC | $RM | $CM |"
+            done < repos.txt
+          } > "$F"
+          cat "$F" >> "$GITHUB_STEP_SUMMARY"
+          git config user.name "devops-hq-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add audits && git commit -m "audit: $(date -u +%F)" && git push || true
+          gh issue create --title "Weekly audit $(date -u +%F)" --body-file "$F" || true
