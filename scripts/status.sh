@@ -14,8 +14,8 @@ while read -r R; do
   RUN=$(gh run list -R "$OWNER/$R" -b main -L 1 --json conclusion,status --jq '.[0] | (.conclusion // .status) // "none"' 2>/dev/null || echo "n/a")
   PRS=$(gh pr list -R "$OWNER/$R" --json createdAt --jq '[.[] | select((now - (.createdAt|fromdateiso8601)) > 259200)] | length' 2>/dev/null || echo 0)
   ISS=$(gh issue list -R "$OWNER/$R" --label ready --json number --jq length 2>/dev/null || echo 0)
-  DEP=$(gh api "repos/$OWNER/$R/dependabot/alerts?state=open&per_page=100" --jq length 2>/dev/null || echo "?")
-  CS=$(gh api "repos/$OWNER/$R/code-scanning/alerts?state=open&per_page=100" --jq length 2>/dev/null || echo "?")
+  DEP=$(gh api "repos/$OWNER/$R/dependabot/alerts?state=open&per_page=100" --jq length 2>/dev/null) || DEP="?"
+  CS=$(gh api "repos/$OWNER/$R/code-scanning/alerts?state=open&per_page=100" --jq length 2>/dev/null) || CS="?"
   FLAG="🟢"
   [ "$PRS" != "0" ] && FLAG="🟡"
   { [ "$RUN" = "failure" ] || { [ "$DEP" != "?" ] && [ "$DEP" -gt 0 ]; } || { [ "$CS" != "?" ] && [ "$CS" -gt 0 ]; }; } && FLAG="🔴 RED"
