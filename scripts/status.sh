@@ -21,3 +21,14 @@ while read -r R; do
   { [ "$RUN" = "failure" ] || { [ "$DEP" != "?" ] && [ "$DEP" -gt 0 ]; } || { [ "$CS" != "?" ] && [ "$CS" -gt 0 ]; }; } && FLAG="🔴 RED"
   echo "| $FLAG | [$R](https://github.com/$OWNER/$R) | $RUN | $PRS | $ISS | $DEP | $CS |"
 done < repos.txt
+
+echo
+echo "## Live services (uptime)"
+echo "| | URL | HTTP |"
+echo "|---|---|---|"
+while read -r URL; do
+  [ -z "$URL" ] && continue
+  CODE=$(curl -s -o /dev/null -m 90 -w "%{http_code}" "$URL")
+  FLAG="🟢"; [ "$CODE" != "200" ] && FLAG="🔴 RED"
+  echo "| $FLAG | $URL | $CODE |"
+done < uptime.txt
