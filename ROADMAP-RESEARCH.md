@@ -43,3 +43,15 @@ dark theme, accessibility, PWA, pagination, rate limiting, model card, etc.).
 - Books: api.market/blog/skycraft/books-api/best-books-api · developers.googleblog.com/new-books-api-for-developers
 - ML: machinelearningmastery.com SHAP for tree models · datanovia.com conformal intervals · zillow.com/research/putting-accuracy-in-context-3255
 - Mortgage calculators: mathos.ai best loan payment calculators · estatepass.ai/best/mortgage-calculator
+
+## Round 3 (10 Oct 2026): what separates the #1 apps
+| Finding | Evidence | Built as |
+|---|---|---|
+| 70-90% of users leave in the first session; one meaningful first action makes them 2-3x likelier to return | trysonar.app day-1 retention guide; moburst.com onboarding UX | 30-second onboarding with illustrations (3 Android apps), guided sample tasks (Todo) |
+| Home-screen widgets raised retention 25% | Android Developers Blog, May 2026 (gratitude widgets case study) | Glance widgets: Expense, EMI, Notes |
+| Opted-in users are ~2x as likely to stay; ask after value, cap frequency | jotform.com push best practices 2026 | Opt-in reminders: daily log, EMI due date, note reminders |
+| Gamified saving goals improved success by almost 20% | Bayes Business School (City St George's) study | Badges: Expense, Todo; EMI payoff milestones; loan debt-free plan |
+| Empty states that explain, suggest and guide become onboarding | setproduct.com empty-state guide | Illustrated empty states, friendly errors with auto-retry |
+| Custom install buttons get more PWA installs | MDN and Microsoft Edge PWA best practices | Install buttons and offline forecast (Todo, Weather) |
+
+Also: real app screenshots in the portfolio; cloud visual QA (browser + Android emulator) with a weekly AI design review on every app.
