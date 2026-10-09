@@ -47,14 +47,15 @@ Play Console → **Create app**
 2. App signing: accept **Play App Signing** (Google holds the app key; your upload key stays in `~/Documents/PlayStoreKeys/`)
 3. Upload the AAB:
    - Android apps: GitHub repo → **Actions** → latest "Google Play (internal track)" run → artifact **app-release-aab** → unzip → `app-release.aab`
-   - Block Drop: Unity Build Automation → Build history → latest green build → download the **.aab** (see note below)
+   - Block Drop: Unity Build Automation → Build history → latest green **Play Release** build → ⋯ → Download. Unity labels it ".APK" but it is an App Bundle: rename the file to `.aab` before uploading (build #4 is already saved as `~/Desktop/BlockDrop-PlayRelease-4.aab`)
 4. Release name: `1.0.0` · Notes: "First release"
 5. **Testers:** create an email list with your testers' Gmail addresses → share the opt-in link with them
 6. Review → **Start rollout to Closed testing**
 
 ## 5. Closed testing → Production
-- New personal accounts must run closed testing with real testers for the period Play Console shows (check the exact tester count and days on the **Dashboard**).
-- Keep testers opening the app during that time.
+- Personal accounts created after 13 Nov 2023 must run a closed test with **at least 12 testers opted in for the last 14 days in a row** before applying for production. If you drop below 12 at any point, the 14 days start again. Organisation accounts are exempt.
+- Start recruiting now: 12+ friends or family with an Android phone and a Gmail address. Add a few spares in case someone drops out.
+- Keep testers opening the app during those 14 days.
 - Then **Dashboard → Apply for production** → answer the questions → wait for review.
 
 ## 6. Later: automatic uploads (optional)
@@ -70,19 +71,20 @@ Block Drop sends an **anonymous player ID** and **scores** to Unity Gaming Servi
 - Data types collected:
   - **Device or other IDs**: the anonymous Unity player ID. Purpose: **App functionality**. Not shared.
   - **App activity → Other actions**: game scores. Purpose: **App functionality**. Not shared.
+  - **Personal info → Name**: the optional nickname players can set, shown on public leaderboards. Purpose: **App functionality**. Optional. Not shared.
 - Is data encrypted in transit? **Yes**
 - Can users request deletion? **Yes**, via the contact link in the privacy policy
 - Is collection optional? **Yes**. The game works fully offline.
 - Unity acts as a service provider (processor), which Google doesn't count as "sharing". Check the current Play wording when you fill the form.
-- Content rating: answer **Yes** to "users can interact or exchange information?" **only** if you consider leaderboard names interaction. Names are auto-generated, so **No** is reasonable.
+- Content rating: there is no chat, but players can choose a nickname that others see on the leaderboards. If the questionnaire asks whether users can interact or share content, answer **Yes** to stay on the safe side.
 
 ### Unity dashboard (one time)
 cloud.unity.com → Block Drop Puzzle → **Leaderboards** → create:
-- `classic`: Higher is better · Keep best score · Reset never
-- `daily`: Higher is better · Keep best score · Reset daily 00:00 UTC
+- `Classic`: Highest to lowest · Best score · No reset  ✅ created
+- `Daily`: Highest to lowest · Best score · Reset every day 00:00 UTC  ✅ created
+- IDs are case-sensitive and must match `OnlineService.cs`.
 
-## Block Drop on Play: two extra Unity settings
-In Unity Build Automation → Configurations → Default Android → Edit:
-- **Android SDK version: 36**, to match the project's target API 36
-- **Build App Bundle (AAB): on**. Play needs `.aab`, not `.apk`.
-- **Credentials:** upload `~/Documents/PlayStoreKeys/upload-keystore.jks` (alias `upload`, your keystore password) instead of the debug keystore, for the Play release build
+## Block Drop: Unity Build Automation targets
+- **Play Release**: App Bundle signed with the upload key. Build this one for Google Play (click Build manually).
+- **Default Android**: unsigned test APK. Not needed (APKs are built locally). Turn **Auto-build off** so pushes don't use free build minutes.
+- Store listing text and graphics: `blockdrop-puzzle-unity/store/`.
