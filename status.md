@@ -1,4 +1,4 @@
-# Status — 2026-10-09 12:27 UTC
+# Status — 2026-10-09 12:29 UTC
 
 | | Repo | Last CI | Stale PRs (>3d) | Ready issues | Dependabot alerts | Code-scanning alerts |
 |---|---|---|---|---|---|---|
@@ -10,7 +10,7 @@
 | 🟢 | [weather-dashboard-web](https://github.com/Sabin78910/weather-dashboard-web) | success | 0 | 0 | ? | ? |
 | 🟢 | [loan-calculator-web](https://github.com/Sabin78910/loan-calculator-web) | skipped | 0 | 0 | ? | ? |
 | 🟢 | [inventory-api-node](https://github.com/Sabin78910/inventory-api-node) | skipped | 0 | 0 | ? | ? |
-| 🟢 | [bookstore-api-python](https://github.com/Sabin78910/bookstore-api-python) |  | 0 | 0 | ? | ? |
+| 🟢 | [bookstore-api-python](https://github.com/Sabin78910/bookstore-api-python) | skipped | 0 | 0 | ? | ? |
 | 🟢 | [house-price-ml](https://github.com/Sabin78910/house-price-ml) | success | 0 | 0 | ? | ? |
 | 🟢 | [blockdrop-puzzle-unity](https://github.com/Sabin78910/blockdrop-puzzle-unity) | success | 0 | 0 | ? | ? |
 
