@@ -37,7 +37,7 @@ Play Console → **Create app**
 | Content rating | Fill the questionnaire. Category: Utility/Productivity (Block Drop: Game). Answer **No** to violence, sexuality, gambling, user interaction, sharing location, and purchases. |
 | Target audience | **18 and over** (simplest for utilities; avoids the Families policy). Block Drop: 13+ unless you want Families. |
 | News app | No |
-| Data safety | Does your app collect or share user data? **No**. Everything stays on the device, and the apps have no internet permission. |
+| Data safety | Expense, EMI, Notes: **No** data collected (everything stays on the device, no internet permission). **Block Drop: see its section below.** |
 | Government app | No |
 | Financial features (Expense, EMI) | None of the listed features (no loans issued, no banking, it's a calculator/tracker) |
 | Health | No |
@@ -63,6 +63,23 @@ Once each app exists in Play Console and has had one manual upload:
 2. Play Console → **Users and permissions** → invite the service-account email → give it release rights for the apps
 3. Add the JSON to each Android repo as the secret `PLAY_SERVICE_ACCOUNT_JSON`
 4. From then on, every merge to `main` uploads to the internal track automatically.
+
+## Block Drop: Data safety is different (online leaderboards)
+Block Drop sends an **anonymous player ID** and **scores** to Unity Gaming Services when online. In Data safety, answer:
+- Does your app collect or share user data? **Yes**
+- Data types collected:
+  - **Device or other IDs**: the anonymous Unity player ID. Purpose: **App functionality**. Not shared.
+  - **App activity → Other actions**: game scores. Purpose: **App functionality**. Not shared.
+- Is data encrypted in transit? **Yes**
+- Can users request deletion? **Yes**, via the contact link in the privacy policy
+- Is collection optional? **Yes**. The game works fully offline.
+- Unity acts as a service provider (processor), which Google doesn't count as "sharing". Check the current Play wording when you fill the form.
+- Content rating: answer **Yes** to "users can interact or exchange information?" **only** if you consider leaderboard names interaction. Names are auto-generated, so **No** is reasonable.
+
+### Unity dashboard (one time)
+cloud.unity.com → Block Drop Puzzle → **Leaderboards** → create:
+- `classic`: Higher is better · Keep best score · Reset never
+- `daily`: Higher is better · Keep best score · Reset daily 00:00 UTC
 
 ## Block Drop on Play: two extra Unity settings
 In Unity Build Automation → Configurations → Default Android → Edit:
