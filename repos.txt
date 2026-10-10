@@ -13,3 +13,4 @@ prism-pop-game
 ludo-live
 khabar-pulse
 nepse-lens
+sync-api
