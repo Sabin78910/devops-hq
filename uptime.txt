@@ -5,3 +5,7 @@ https://sabin78910.github.io/weather-dashboard-web/
 https://sabin78910.github.io/loan-calculator-web/
 https://sabin78910.github.io/privacy-policy/
 https://bookstore-api-lhpl.onrender.com/health
+https://sabin78910.github.io/prism-pop-game/
+https://sabin78910.github.io/ludo-live/
+https://sabin78910.github.io/khabar-pulse/
+https://sabin78910.github.io/nepse-lens/

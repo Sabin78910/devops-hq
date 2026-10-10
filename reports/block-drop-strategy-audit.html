@@ -1,0 +1,205 @@
+<title>Block Drop Strategy Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one reading column (~68ch) with full-width tables; status encoded as chips. Palette borrowed from the game: night violet + trophy gold. */
+:root {
+  --bg: #f6f4fb; --surface: #ffffff; --ink: #1d1638; --muted: #5d5878; --line: #e2ddf0;
+  --violet: #4b2bb8; --gold: #b07a00; --gold-soft: #fff3cf;
+  --pass: #1f7a4d; --pass-bg: #e3f5ec; --warn: #8a5a00; --warn-bg: #fff1d6; --fail: #b3261e; --fail-bg: #fde7e5;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #120d26; --surface: #1b1536; --ink: #ece9f8; --muted: #a9a3c6; --line: #2e2652;
+  --violet: #b9a6ff; --gold: #ffd54a; --gold-soft: #2b2410;
+  --pass: #6fdca4; --pass-bg: #12301f; --warn: #ffcf6b; --warn-bg: #2f2410; --fail: #ff8a80; --fail-bg: #351615; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #120d26; --surface: #1b1536; --ink: #ece9f8; --muted: #a9a3c6; --line: #2e2652;
+  --violet: #b9a6ff; --gold: #ffd54a; --gold-soft: #2b2410;
+  --pass: #6fdca4; --pass-bg: #12301f; --warn: #ffcf6b; --warn-bg: #2f2410; --fail: #ff8a80; --fail-bg: #351615; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 17px/1.6 var(--body); margin: 0; padding-inline: 16px; padding-block: 0 64px }
+main { max-width: 760px; margin: 0 auto }
+header { padding-block: 48px 24px; border-bottom: 1px solid var(--line) }
+.eyebrow { font: 600 12px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--violet) }
+h1 { font: 800 clamp(34px, 6vw, 52px)/1.05 var(--display); margin: 12px 0 12px; text-wrap: balance }
+h2 { font: 800 26px/1.2 var(--display); margin: 48px 0 12px; text-wrap: balance }
+h3 { font: 600 19px/1.3 var(--display); margin: 28px 0 8px }
+p, li { max-width: 68ch }
+.lede { font-size: 19px; color: var(--muted) }
+.meta { font: 500 13px/1.4 var(--mono); color: var(--muted) }
+a { color: var(--violet) }
+a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px }
+.verdict { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; margin-top: 28px }
+.verdict strong { color: var(--gold) }
+.figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 16px }
+.fig { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px }
+.fig b { display: block; font: 800 26px/1.1 var(--display); font-variant-numeric: tabular-nums }
+.fig span { font-size: 14px; color: var(--muted) }
+.table-wrap { overflow-x: auto; margin-top: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface) }
+table { border-collapse: collapse; width: 100%; font-size: 15px; min-width: 560px }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font: 600 12px/1.3 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+tr:last-child td { border-bottom: 0 }
+.chip { display: inline-block; font: 600 12px/1 var(--body); padding: 5px 8px; border-radius: 999px; white-space: nowrap }
+.pass { color: var(--pass); background: var(--pass-bg) } .warn { color: var(--warn); background: var(--warn-bg) } .fail { color: var(--fail); background: var(--fail-bg) }
+.phase { border-left: 3px solid var(--violet); padding-left: 16px; margin-top: 20px }
+.phase h3 { margin-top: 0 }
+.phase .when { font: 500 13px/1 var(--mono); color: var(--gold) }
+.note { background: var(--gold-soft); border-radius: 12px; padding: 14px 16px; margin-top: 16px }
+ol, ul { padding-left: 22px }
+footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted) }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth } }
+</style>
+
+<main>
+<header>
+  <div class="eyebrow">Block Drop Puzzle · Strategy &amp; product audit</div>
+  <h1>What it takes for Block Drop to compete at the top of the block-puzzle charts</h1>
+  <p class="lede">Market research on the games that lead the genre today, an audit of Block Drop as it stands on 9 October 2026, and a prioritised plan from launch to scale.</p>
+  <p class="meta">Prepared for Sabin Khanal · build 1.0.0 (Unity 6, Android) · data cited from public 2025–2026 reports</p>
+</header>
+
+<section class="verdict">
+  <strong>Verdict.</strong> Block Drop now has a solid, tested core: a polished 8×8 block puzzle with 30 levels, an AI opponent, local 2-player, challenge codes and an online backend. That puts it at <em>launch parity</em> with the genre's basics. It does not yet have the systems that keep the leaders on top: a first-run tutorial, daily habits (streaks, rewards, missions), live events, analytics, crash reporting and a monetisation model. No game holds #1 for a hundred years. What separates long-lived chart leaders is a weekly LiveOps rhythm and decisions driven by retention data, which is the plan below.
+</section>
+
+<h2>The market in numbers</h2>
+<div class="figures">
+  <div class="fig"><b>#1</b><span>Block Blast was the most-downloaded mobile game worldwide in Q1 2026</span></div>
+  <div class="fig"><b>870M</b><span>Block Blast lifetime downloads; 200M+ monthly players</span></div>
+  <div class="fig"><b>≈$17.5M</b><span>Block Blast's estimated monthly ad revenue, with almost no in-app purchases</span></div>
+  <div class="fig"><b>$14.4B</b><span>Puzzle-game revenue driving market gains (Sept 2026)</span></div>
+  <div class="fig"><b>5.35%</b><span>Average day-30 retention for puzzle games</span></div>
+  <div class="fig"><b>$1.80</b><span>Median Android cost per install, casual/puzzle, Tier-1 markets (+22% YoY)</span></div>
+</div>
+<p>Three things follow from this. First, the genre is proven at enormous scale, and a pure-ads model can carry it. Second, buying players is getting more expensive, so a game only grows profitably if players stay: over 95% of installers churn within 30 days across the stores. Third, Google Play ranks and features games on rating, engagement, technical quality, update frequency and localisation, all of which are within a small team's control.</p>
+
+<h2>How the leaders compare</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Game</th><th>Board</th><th>Modes beyond endless</th><th>Money model</th><th>What players praise / complain about</th></tr></thead>
+  <tbody>
+    <tr><td><b>Block Blast</b></td><td>8×8, three pieces per turn</td><td>Adventure: 96 levels revealing a weekly picture</td><td>Ads only</td><td>Simple, satisfying clears / ad frequency</td></tr>
+    <tr><td><b>Blockudoku</b></td><td>9×9, lines + 3×3 squares</td><td>Daily challenges, seasonal events, tournaments</td><td>Free + in-app purchases</td><td>Clean minimal design, low cognitive load</td></tr>
+    <tr><td><b>Woodoku</b></td><td>8×8 wooden blocks</td><td>Travel adventure with handcrafted levels</td><td>Ads + in-app purchases</td><td>Calm wooden aesthetic / aggressive monetisation</td></tr>
+    <tr><td><b>Royal Match</b> (match-3)</td><td>Levels</td><td>Layered LiveOps: win-streaks, 3-day events, team play</td><td>In-app purchases</td><td>Constant fresh goals; benchmark for retention design</td></tr>
+    <tr><td><b>Block Drop</b> (us)</td><td>8×8, three pieces</td><td>30 levels, daily, vs-AI (3 levels), 2-player, challenge codes, leaderboards</td><td>None yet</td><td>New. Unique angles: AI opponent and fair challenge codes</td></tr>
+  </tbody>
+</table></div>
+<p><b>Where Block Drop can stand out:</b> nobody in the top three offers a real AI opponent or a "same pieces as your friend" challenge. Those are genuine hooks for social sharing and for store screenshots. The second opening is the ad complaint: a game that limits ads to optional rewarded videos can win on ratings, which feed directly into Play ranking.</p>
+
+<h2>Audit of Block Drop today</h2>
+<p>Status after today's fixes, verified on an Android 15 emulator and on your phone's screenshots.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Area</th><th>Status</th><th>Evidence / gap</th></tr></thead>
+  <tbody>
+    <tr><td>Core gameplay</td><td><span class="chip pass">Pass</span></td><td>Drag &amp; drop, line clears, combos; 21 automated tests pass</td></tr>
+    <tr><td>Phone layout</td><td><span class="chip pass">Pass</span></td><td>Fixed today: all three pieces visible; HUD overlap, panel and title bugs fixed</td></tr>
+    <tr><td>Visual design</td><td><span class="chip warn">Warn</span></td><td>Glossy blocks and colourful UI; still uses Unity's default font and immediate-mode UI. A custom rounded font and animated UI transitions would match the leaders</td></tr>
+    <tr><td>Game feel</td><td><span class="chip warn">Warn</span></td><td>Clear particles, shake, pop-ups, sounds and haptics are built; not yet tested on a real phone</td></tr>
+    <tr><td>Modes &amp; levels</td><td><span class="chip pass">Pass</span></td><td>30 levels (every one proven beatable by a bot), daily, vs-AI, 2-player, challenges</td></tr>
+    <tr><td>Online backend</td><td><span class="chip warn">Warn</span></td><td>Anonymous sign-in and custom names work; the two leaderboards still need to be created in the Unity dashboard</td></tr>
+    <tr><td>Real-time online multiplayer</td><td><span class="chip fail">Missing</span></td><td>Needs Unity Lobby + Relay (or similar) and match-making. See phase 3</td></tr>
+    <tr><td>First-run tutorial</td><td><span class="chip fail">Missing</span></td><td>New players get no guided first move; this is the biggest day-1 retention lever</td></tr>
+    <tr><td>Daily habits</td><td><span class="chip fail">Missing</span></td><td>No login streak, daily reward or missions; leaders lean on these for day 3–30 retention</td></tr>
+    <tr><td>Live events</td><td><span class="chip fail">Missing</span></td><td>No weekend events, seasonal themes or tournaments</td></tr>
+    <tr><td>Analytics</td><td><span class="chip fail">Missing</span></td><td>No retention, funnel or level-difficulty data, so no way to tune the game</td></tr>
+    <tr><td>Crash reporting</td><td><span class="chip fail">Missing</span></td><td>Crash-free rate is a Play ranking signal; add Unity Cloud Diagnostics or Firebase Crashlytics</td></tr>
+    <tr><td>Monetisation</td><td><span class="chip fail">Missing</span></td><td>No rewarded ads or purchases. Decide the model before launch (recommendation below)</td></tr>
+    <tr><td>Localisation</td><td><span class="chip fail">Missing</span></td><td>English only; Play ranks per country, and puzzle audiences are strong in JP, KR, DE, BR</td></tr>
+    <tr><td>Accessibility</td><td><span class="chip warn">Warn</span></td><td>Large text and haptics toggle exist; no colour-blind palette yet</td></tr>
+    <tr><td>Privacy &amp; store policy</td><td><span class="chip pass">Pass</span></td><td>Privacy policy live; Data safety answers prepared; target API 36</td></tr>
+    <tr><td>Build &amp; release pipeline</td><td><span class="chip pass">Pass</span></td><td>Unity Build Automation (APK + signed AAB), GitHub repo, read-only deploy key</td></tr>
+  </tbody>
+</table></div>
+
+<h2>Why this game is worth building</h2>
+<ul>
+  <li><b>Proven demand.</b> The top game in all of mobile by downloads is an 8×8 block puzzle. Players already understand the rules, so the learning curve is near zero.</li>
+  <li><b>Low cost to run.</b> All art and sound are generated in code, the game works offline, and the backend fits inside Unity's free tiers at launch.</li>
+  <li><b>Clear differentiation.</b> An AI opponent with three skill levels, fair "same pieces" challenges with a 6-letter code, and an honest ad policy are three things the leaders don't combine.</li>
+  <li><b>Evergreen genre.</b> Block puzzles have topped charts for over a decade (1010!, Woodoku, Blockudoku, Block Blast), which suggests lasting demand rather than a fad.</li>
+</ul>
+<div class="note"><b>Risks to plan for.</b> The category is crowded and acquisition costs are rising, so growth will depend on organic sharing, store ratings and retention more than paid ads at first. Copying the leaders exactly gives no reason to switch; the differentiators above have to be visible in the first minute.</div>
+
+<h2>Roadmap</h2>
+<div class="phase"><span class="when">Weeks 0–2</span><h3>Launch-ready</h3>
+<ul>
+  <li>Create the <code>classic</code> and <code>daily</code> leaderboards; verify scores appear.</li>
+  <li>Interactive first-run tutorial (three guided moves), then straight into play.</li>
+  <li>Crash reporting and basic analytics: installs, day-1/7 return, level start/finish/fail, session length.</li>
+  <li>Custom display font and animated screen transitions.</li>
+  <li>Closed testing on Google Play with 20+ real testers; fix everything they report.</li>
+</ul></div>
+<div class="phase"><span class="when">Months 1–2</span><h3>Habits and money</h3>
+<ul>
+  <li>Daily login streak with escalating rewards, three daily missions, and a weekly "picture reveal" level path like Block Blast's adventure.</li>
+  <li>Monetisation, recommended: <b>rewarded ads only</b> (undo a move, extra hint, revive once), plus a one-time "remove ads" purchase. No forced interstitials during play. This protects ratings, which drive ranking.</li>
+  <li>Unlockable block themes (wood, jewel, neon, seasonal) as rewards.</li>
+  <li>Localise into Spanish, Portuguese, German, Japanese, Korean, Hindi and Nepali.</li>
+</ul></div>
+<div class="phase"><span class="when">Months 3–6</span><h3>Social and online</h3>
+<ul>
+  <li>Real-time online duels: Unity Lobby + Relay, quick-match by skill, friend invites through challenge codes.</li>
+  <li>Weekend events (3-day format, 12–24h break between events), seasonal tournaments with leaderboards.</li>
+  <li>Cloud save so progress follows the player across devices.</li>
+  <li>A/B test difficulty, reward sizes and ad placement using analytics.</li>
+</ul></div>
+<div class="phase"><span class="when">Months 6–12</span><h3>Scale</h3>
+<ul>
+  <li>Soft launch paid acquisition in one or two markets; scale only where lifetime value beats cost per install.</li>
+  <li>iOS release from the same Unity project.</li>
+  <li>Weekly content updates (Play ranks update frequency), creator partnerships, store featuring application.</li>
+</ul></div>
+
+<h2>Targets to hit before spending on ads</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Metric</th><th>Target</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>Day-1 retention</td><td>≥ 45%</td><td>Shows the first session works; prototype bar used by top publishers is ~55%</td></tr>
+    <tr><td>Day-7 retention</td><td>≥ 20%</td><td>Shows habit formation (publisher bar ~22%)</td></tr>
+    <tr><td>Day-30 retention</td><td>≥ 6%</td><td>Above the 5.35% puzzle average</td></tr>
+    <tr><td>Crash-free sessions</td><td>≥ 99.5%</td><td>Technical quality is a ranking and featuring signal</td></tr>
+    <tr><td>Store rating</td><td>≥ 4.5★</td><td>Rating is among the most important Play ranking factors</td></tr>
+    <tr><td>Ad revenue per daily user</td><td>$0.03–0.10</td><td>Typical range for ad-funded casual puzzle games</td></tr>
+  </tbody>
+</table></div>
+
+<h2>How a top studio would run this</h2>
+<ol>
+  <li><b>Measure before scaling.</b> Ship to a small audience, read retention, fix the biggest drop-off, repeat. Spend on ads only after the targets above are met.</li>
+  <li><b>One owner per number.</b> Retention, revenue and quality each have an owner and a weekly review.</li>
+  <li><b>Kill or double down quickly.</b> If a feature doesn't move its metric in two weeks, remove it; if it does, invest more.</li>
+  <li><b>Protect the rating.</b> Never trade short-term ad revenue for one-star reviews.</li>
+  <li><b>Keep shipping.</b> A small update every week beats a large update every quarter for both players and store ranking.</li>
+</ol>
+
+<h2>Your next steps this week</h2>
+<ol>
+  <li>Create the two leaderboards in the Unity dashboard (<code>classic</code>, <code>daily</code>).</li>
+  <li>Play the latest APK on your phone and note anything that feels wrong.</li>
+  <li>Complete Google Play ID verification, upload the apps, and invite at least 20 testers.</li>
+  <li>Decide the monetisation model (recommendation: rewarded ads plus "remove ads").</li>
+  <li>Pick the first roadmap item to build next: the tutorial is the highest-impact one.</li>
+</ol>
+
+<footer>
+  <p><b>Sources:</b>
+  <a href="https://www.businesswire.com/news/home/20260423998721/en/Block-Blast-Ends-Q1-2026-as-the-No.-1-Most-Downloaded-Mobile-Game-Worldwide">Business Wire: Block Blast #1 in Q1 2026</a> ·
+  <a href="https://www.blog.udonis.co/statistics/block-blast">Udonis: Block Blast statistics</a> ·
+  <a href="https://foxdata.com/en/blogs/global-mobile-game-rankings-august-2026-top-15-downloads-revenue/">FoxData: August 2026 rankings</a> ·
+  <a href="https://www.singular.net/blog/top-mobile-games/">Singular: top mobile games 2026</a> ·
+  <a href="https://sensortower.com/blog/what-royal-matchs-calendar-teaches-about-live-ops-in-2026">Sensor Tower: Royal Match LiveOps</a> ·
+  <a href="https://appfollow.io/blog/mobile-game-retention">AppFollow: retention 2026</a> ·
+  <a href="https://naavik.co/digest/live-ops-trends-powering-mobile-puzzle/">Naavik: puzzle LiveOps trends</a> ·
+  <a href="https://www.pocketgamer.biz/interview/77247/corentin-selz-voodoo-from-hypercasual-to-hybrid-casual/">PocketGamer.biz: Voodoo on retention bars</a> ·
+  <a href="https://www.juegostudio.com/blog/arpdau-benchmarks-by-game-genre">Juego Studio: ARPDAU benchmarks</a> ·
+  <a href="https://foxdata.com/en/blogs/mobile-game-ua-in-2026-why-cpi-is-rising-and-what-smart-studios-do-differently/">FoxData: CPI in 2026</a> ·
+  <a href="https://play.google.com/console/about/guides/featuring/">Google Play: getting featured</a> ·
+  <a href="https://www.apptweak.com/en/aso-blog/google-play-ranking-factors">AppTweak: Play ranking factors</a> ·
+  <a href="https://marlvel.ai/apps/woodoku-blast-block-puzzle/vs">Marlvel: Woodoku vs rivals</a></p>
+  <p>Market figures are third-party estimates and may differ between sources.</p>
+</footer>
+</main>
