@@ -9,3 +9,7 @@ inventory-api-node
 bookstore-api-python
 house-price-ml
 blockdrop-puzzle-unity
+prism-pop-game
+ludo-live
+khabar-pulse
+nepse-lens

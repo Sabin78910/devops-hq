@@ -7,7 +7,7 @@ set -euo pipefail
 export PATH="/opt/homebrew/bin:$PATH"
 KEYTOOL="/Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/keytool"
 DIR="$HOME/Documents/PlayStoreKeys"; KS="$DIR/upload-keystore.jks"; ALIAS="upload"
-REPOS="expense-tracker-android emi-calculator-android notes-android"
+REPOS="expense-tracker-android emi-calculator-android notes-android prism-pop-game ludo-live khabar-pulse nepse-lens"
 mkdir -p "$DIR"; chmod 700 "$DIR"
 if [ -f "$KS" ]; then echo "Keystore already exists at $KS — reusing it."; else
   read -rsp "Choose a keystore password (min 8 chars, hidden): " P1; echo
