@@ -9,3 +9,7 @@ https://sabin78910.github.io/prism-pop-game/
 https://sabin78910.github.io/ludo-live/
 https://sabin78910.github.io/khabar-pulse/
 https://sabin78910.github.io/nepse-lens/
+https://sync-api.sabin-apps.workers.dev/v1/health
+https://ludo-live.sabin-apps.workers.dev/
+https://khabar-pulse-api.sabin-apps.workers.dev/api/health
+https://nepse-lens.sabin-apps.workers.dev/latest.json
