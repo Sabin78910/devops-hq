@@ -14,3 +14,4 @@ ludo-live
 khabar-pulse
 nepse-lens
 sync-api
+sabin-labs
