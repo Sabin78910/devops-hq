@@ -13,3 +13,4 @@ https://sync-api.sabin-apps.workers.dev/v1/health
 https://ludo-live.sabin-apps.workers.dev/
 https://khabar-pulse-api.sabin-apps.workers.dev/api/health
 https://nepse-lens.sabin-apps.workers.dev/latest.json
+https://sabin78910.github.io/sabin-labs/
