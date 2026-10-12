@@ -1,0 +1,62 @@
+name: Finish line
+
+# Once a day: are all build queues empty with nothing parked for a human? If so, open one issue
+# telling the owner everything is complete (GitHub emails the repo owner). If the one-week deadline
+# passes first, open a check-in issue listing what is left. Uses no Claude quota.
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DEADLINE: "2026-10-19"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Count remaining work across every repo
+        run: |
+          left=""; total=0
+          for r in $(cat repos.txt); do
+            q=$(gh issue list -R "Sabin78910/$r" --label ready --state open --json number --jq length)
+            h=$(gh issue list -R "Sabin78910/$r" --label needs-human --state open --json number --jq length)
+            if [ "$q" != 0 ] || [ "$h" != 0 ]; then left="$left\n| $r | $q | $h |"; total=$((total+q+h)); fi
+          done
+          echo "TOTAL=$total" >> "$GITHUB_ENV"
+          printf '%b' "$left" > left.md
+          echo "Remaining: $total"
+      - name: Report completion
+        if: env.TOTAL == '0'
+        run: |
+          t="✅ All Sabin Labs build work is complete"
+          gh issue list --state all --search "$t in:title" --json number --jq length | grep -qx 0 || exit 0
+          gh issue create --title "$t" --body "@Sabin78910 every build queue is empty and no task is parked for a human.
+
+          What's left is yours, not code:
+          1. Google Play identity verification, then create each listing and upload its AAB (Actions artifacts).
+          2. The news self-declaration in Play Console for Khabar Pulse.
+          3. 12 testers in one group for the 14-day closed test (one group for all apps).
+          4. Block Drop: server-side score validation in the Unity dashboard before public launch.
+          5. Back up the Play upload key from ~/Documents/PlayStoreKeys.
+
+          The daily planners keep adding small research-backed improvements from here on.
+          Live status: https://github.com/Sabin78910/devops-hq/blob/main/status.md"
+      - name: One-week check-in
+        if: env.TOTAL != '0'
+        run: |
+          [ "$(date -u +%F)" \< "$DEADLINE" ] && exit 0
+          t="⏰ One-week check-in: work still in progress"
+          gh issue list --state all --search "$t in:title" --json number --jq length | grep -qx 0 || exit 0
+          gh issue create --title "$t" --body "@Sabin78910 the one-week target ($DEADLINE) has passed with $TOTAL items left. The cloud agents are still working through them at the pace the Claude plan's usage limit allows.
+
+          | Repo | Queued | Needs a human |
+          |---|---|---|
+          $(cat left.md)
+
+          Open a Claude session and ask it to clear the 'needs-human' items; the queued ones finish on their own."
