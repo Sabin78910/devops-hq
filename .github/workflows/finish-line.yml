@@ -1,11 +1,11 @@
 name: Finish line
 
-# Once a day: are all build queues empty with nothing parked for a human? If so, open one issue
+# Every hour: are all build queues empty with nothing parked for a human? If so, open one issue
 # telling the owner everything is complete (GitHub emails the repo owner). If the one-week deadline
 # passes first, open a check-in issue listing what is left. Uses no Claude quota.
 on:
   schedule:
-    - cron: "0 3 * * *"
+    - cron: "15 * * * *"
   workflow_dispatch:
 
 permissions:
