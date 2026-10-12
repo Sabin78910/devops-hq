@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
-      DEADLINE: "2026-10-19"
+      DEADLINE: "2026-10-13"
     steps:
       - uses: actions/checkout@v4
       - name: Count remaining work across every repo
@@ -51,12 +51,12 @@ jobs:
         if: env.TOTAL != '0'
         run: |
           [ "$(date -u +%F)" \< "$DEADLINE" ] && exit 0
-          t="⏰ One-week check-in: work still in progress"
+          t="🛑 Build loop stopped: final report"
           gh issue list --state all --search "$t in:title" --json number --jq length | grep -qx 0 || exit 0
-          gh issue create --title "$t" --body "@Sabin78910 the one-week target ($DEADLINE) has passed with $TOTAL items left. The cloud agents are still working through them at the pace the Claude plan's usage limit allows.
+          gh issue create --title "$t" --body "@Sabin78910 the build loop stopped as you asked at 06:00 Nepal time on $DEADLINE. Everything below was still queued and was NOT built; the live sites, CI, deploys, data collectors and monitoring keep running.
 
           | Repo | Queued | Needs a human |
           |---|---|---|
           $(cat left.md)
 
-          Open a Claude session and ask it to clear the 'needs-human' items; the queued ones finish on their own."
+          To resume later, delete the stop guard (search 1791850500) in each repo's claude-agent.yml."
