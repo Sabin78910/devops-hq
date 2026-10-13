@@ -1,4 +1,4 @@
-# Status — 2026-10-13 00:04 UTC
+# Status — 2026-10-13 13:25 UTC
 
 | | Repo | Last CI | Stale PRs (>3d) | Ready issues | Dependabot alerts | Code-scanning alerts |
 |---|---|---|---|---|---|---|
@@ -13,9 +13,9 @@
 | 🟢 | [bookstore-api-python](https://github.com/Sabin78910/bookstore-api-python) | success | 0 | 0 | ? | ? |
 | 🟢 | [house-price-ml](https://github.com/Sabin78910/house-price-ml) | success | 0 | 0 | ? | ? |
 | 🟢 | [blockdrop-puzzle-unity](https://github.com/Sabin78910/blockdrop-puzzle-unity) | success | 0 | 0 | ? | ? |
-| 🟢 | [prism-pop-game](https://github.com/Sabin78910/prism-pop-game) |  | 0 | 3 | ? | ? |
-| 🟢 | [ludo-live](https://github.com/Sabin78910/ludo-live) |  | 0 | 1 | ? | ? |
-| 🟢 | [khabar-pulse](https://github.com/Sabin78910/khabar-pulse) |  | 0 | 0 | ? | ? |
+| 🟢 | [prism-pop-game](https://github.com/Sabin78910/prism-pop-game) | success | 0 | 3 | ? | ? |
+| 🟢 | [ludo-live](https://github.com/Sabin78910/ludo-live) | success | 0 | 1 | ? | ? |
+| 🟢 | [khabar-pulse](https://github.com/Sabin78910/khabar-pulse) | success | 0 | 0 | ? | ? |
 | 🟢 | [nepse-lens](https://github.com/Sabin78910/nepse-lens) | success | 0 | 0 | ? | ? |
 | 🟢 | [sync-api](https://github.com/Sabin78910/sync-api) | success | 0 | 0 | ? | ? |
 | 🟢 | [sabin-labs](https://github.com/Sabin78910/sabin-labs) | success | 0 | 1 | ? | ? |
