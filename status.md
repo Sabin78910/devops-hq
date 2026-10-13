@@ -1,4 +1,4 @@
-# Status — 2026-10-13 13:25 UTC
+# Status — 2026-10-13 22:14 UTC
 
 | | Repo | Last CI | Stale PRs (>3d) | Ready issues | Dependabot alerts | Code-scanning alerts |
 |---|---|---|---|---|---|---|
@@ -6,14 +6,14 @@
 | 🟢 | [emi-calculator-android](https://github.com/Sabin78910/emi-calculator-android) | success | 0 | 0 | ? | ? |
 | 🟢 | [notes-android](https://github.com/Sabin78910/notes-android) | success | 0 | 0 | ? | ? |
 | 🟢 | [portfolio-web](https://github.com/Sabin78910/portfolio-web) | success | 0 | 0 | ? | ? |
-| 🟢 | [todo-web](https://github.com/Sabin78910/todo-web) | success | 0 | 0 | ? | ? |
+| 🟢 | [todo-web](https://github.com/Sabin78910/todo-web) | n/a | 0 | 0 | ? | ? |
 | 🟢 | [weather-dashboard-web](https://github.com/Sabin78910/weather-dashboard-web) | success | 0 | 0 | ? | ? |
 | 🟢 | [loan-calculator-web](https://github.com/Sabin78910/loan-calculator-web) | success | 0 | 0 | ? | ? |
 | 🟢 | [inventory-api-node](https://github.com/Sabin78910/inventory-api-node) | success | 0 | 0 | ? | ? |
 | 🟢 | [bookstore-api-python](https://github.com/Sabin78910/bookstore-api-python) | success | 0 | 0 | ? | ? |
 | 🟢 | [house-price-ml](https://github.com/Sabin78910/house-price-ml) | success | 0 | 0 | ? | ? |
-| 🟢 | [blockdrop-puzzle-unity](https://github.com/Sabin78910/blockdrop-puzzle-unity) | success | 0 | 0 | ? | ? |
-| 🟢 | [prism-pop-game](https://github.com/Sabin78910/prism-pop-game) | success | 0 | 3 | ? | ? |
+| 🟢 | [blockdrop-puzzle-unity](https://github.com/Sabin78910/blockdrop-puzzle-unity) | n/a | 0 | 0 | ? | ? |
+| 🟡 | [prism-pop-game](https://github.com/Sabin78910/prism-pop-game) | success | 2 | 3 | ? | ? |
 | 🟢 | [ludo-live](https://github.com/Sabin78910/ludo-live) | success | 0 | 1 | ? | ? |
 | 🟢 | [khabar-pulse](https://github.com/Sabin78910/khabar-pulse) | success | 0 | 0 | ? | ? |
 | 🟢 | [nepse-lens](https://github.com/Sabin78910/nepse-lens) | success | 0 | 0 | ? | ? |
@@ -25,7 +25,7 @@
 |---|---|---|
 | 🟢 | https://inventory-api-tagg.onrender.com/health | 200 |
 | 🟢 | https://sabin78910.github.io/portfolio-web/ | 200 |
-| 🟢 | https://sabin78910.github.io/todo-web/ | 200 |
+| 🔴 RED | https://sabin78910.github.io/todo-web/ | 404 |
 | 🟢 | https://sabin78910.github.io/weather-dashboard-web/ | 200 |
 | 🟢 | https://sabin78910.github.io/loan-calculator-web/ | 200 |
 | 🟢 | https://sabin78910.github.io/privacy-policy/ | 200 |
