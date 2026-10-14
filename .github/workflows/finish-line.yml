@@ -4,8 +4,6 @@ name: Finish line
 # telling the owner everything is complete (GitHub emails the repo owner). If the one-week deadline
 # passes first, open a check-in issue listing what is left. Uses no Claude quota.
 on:
-  schedule:
-    - cron: "15 * * * *"
   workflow_dispatch:
 
 permissions:

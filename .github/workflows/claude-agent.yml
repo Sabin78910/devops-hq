@@ -6,11 +6,6 @@ name: Claude agent (cloud)
 # scheduled run (after the limit resets) continues automatically.
 # Needs repo secret CLAUDE_CODE_OAUTH_TOKEN (from `claude setup-token`, uses your Claude Pro plan).
 on:
-  schedule:
-    - cron: "22 * * * *"
-    - cron: "52 * * * *"
-  issues:
-    types: [labeled]
   workflow_dispatch:
 
 permissions:
@@ -130,8 +125,9 @@ jobs:
     # GitHub often skips scheduled runs for hours, so a failed or usage-limited run restarts the
     # agent itself: it waits until the limit resets (or about an hour), then dispatches a new run.
     needs: [pick, implement]
+    # DISABLED by owner: no self-restart loops.
     # !cancelled(): a run cancelled on purpose must not start a timer; a timed-out job still retries.
-    if: ${{ !cancelled() && (needs.implement.result == 'failure' || needs.implement.result == 'cancelled') }}
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 355
     env:
